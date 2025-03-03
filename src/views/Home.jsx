@@ -3,6 +3,7 @@ import Consolidations from "../components/Consolidations";
 import IntradayMultiple from "../components/IntradayMultiple";
 import PreopenMarket from "../components/PreopenMarket";
 import api from "../utils/api";
+import SettingsPage from "../components/SettingsPage";
 
 export default function Home() {
   const [active, setActive] = useState("consolidation");
@@ -53,6 +54,14 @@ export default function Home() {
         >
           Preopen
         </button>
+        <button
+          className={`px-2 border border-black ${
+            active === "preopen" ? "bg-slate-500" : "bg-slate-300"
+          }`}
+          onClick={() => setActive("settings")}
+        >
+          S
+        </button>
       </div>
       {active === "consolidation" ? (
         <Consolidations />
@@ -60,6 +69,8 @@ export default function Home() {
         <IntradayMultiple />
       ) : active === "preopen" ? (
         <PreopenMarket />
+      ) : active === "settings" ? (
+        <SettingsPage />
       ) : null}
     </div>
   );
