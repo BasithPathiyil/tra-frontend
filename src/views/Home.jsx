@@ -4,6 +4,7 @@ import IntradayMultiple from "../components/IntradayMultiple";
 import PreopenMarket from "../components/PreopenMarket";
 import api from "../utils/api";
 import SettingsPage from "../components/SettingsPage";
+import JSONViewer from "../components/JSONViewer";
 
 export default function Home() {
   const [active, setActive] = useState("consolidation");
@@ -56,11 +57,19 @@ export default function Home() {
         </button>
         <button
           className={`px-2 border border-black ${
-            active === "preopen" ? "bg-slate-500" : "bg-slate-300"
+            active === "settings" ? "bg-slate-500" : "bg-slate-300"
           }`}
           onClick={() => setActive("settings")}
         >
           S
+        </button>
+        <button
+          className={`px-2 border border-black ${
+            active === "j" ? "bg-slate-500" : "bg-slate-300"
+          }`}
+          onClick={() => setActive("j")}
+        >
+          J
         </button>
       </div>
       {active === "consolidation" ? (
@@ -71,6 +80,8 @@ export default function Home() {
         <PreopenMarket />
       ) : active === "settings" ? (
         <SettingsPage />
+      ) : active === "j" ? (
+        <JSONViewer />
       ) : null}
     </div>
   );
