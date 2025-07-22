@@ -5,6 +5,7 @@ import PreopenMarket from "../components/PreopenMarket";
 import api from "../utils/api";
 import SettingsPage from "../components/SettingsPage";
 import JSONViewer from "../components/JSONViewer";
+import JLogic2 from "../components/JLogic2";
 
 export default function Home() {
   const [active, setActive] = useState("consolidation");
@@ -71,6 +72,14 @@ export default function Home() {
         >
           J
         </button>
+        <button
+          className={`px-2 border border-black ${
+            active === "j2" ? "bg-slate-500" : "bg-slate-300"
+          }`}
+          onClick={() => setActive("j2")}
+        >
+          J2
+        </button>
       </div>
       {active === "consolidation" ? (
         <Consolidations />
@@ -82,6 +91,8 @@ export default function Home() {
         <SettingsPage />
       ) : active === "j" ? (
         <JSONViewer />
+      ) : active === "j2" ? (
+        <JLogic2 />
       ) : null}
     </div>
   );

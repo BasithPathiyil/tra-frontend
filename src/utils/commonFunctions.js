@@ -400,9 +400,11 @@ let allSymbols = [
   "RELAXO",
   "RAINBOW",
   "ASTRAZEN",
+  "ETERNAL",
 ];
 
 const nifty100Symbols = [
+  "ETERNAL",
   "RELIANCE",
   "TCS",
   "INFY",
@@ -658,6 +660,90 @@ export const preOpenMarketData = async (data1, query) => {
       };
     };
     const a = await getMARKET_DATA_PRE_OPEN();
+    return a;
+  } catch (error) {
+    console.log("error", error);
+    throw error;
+  }
+};
+
+export const shootUpStocks = async (data1, query) => {
+  let data = JSON.parse(data1);
+  console.log("dataaaaaaaa", data);
+  try {
+    let n = 2;
+    if (query && query.times) {
+      n = query.times;
+    }
+    let m = 1;
+    if (query && query.multiplies) {
+      m = query.multiplies;
+    }
+    let stocks = [...allSymbols];
+    if (query && query?.type === "hundred") {
+      stocks = [...nifty100Symbols];
+    }
+    const getMARKET_DATA_PRE_OPEN1 = async () => {
+      let shootUpStocks = [];
+      let shootDownStocks = [];
+      data.data.forEach(async (item) => {
+        if (query?.type !== "all" && !stocks.includes(item?.metadata?.symbol)) {
+          return;
+        }
+        if (
+          !item.detail?.preOpenMarket?.totalSellQuantity ||
+          !item.detail?.preOpenMarket?.totalBuyQuantity
+        ) {
+          return;
+        }
+        if (
+          item.detail?.preOpenMarket?.totalSellQuantity >
+          m * item.detail?.preOpenMarket?.totalBuyQuantity
+        ) {
+          if (item.detail?.preOpenMarket?.perChange < -n) {
+            shootDownStocks.push({
+              name: item?.metadata?.symbol,
+              totalSellQty: item.detail?.preOpenMarket?.totalSellQuantity,
+              totalBuyQty: item.detail?.preOpenMarket?.totalBuyQuantity,
+              finalQuantity: item.detail?.preOpenMarket?.finalQuantity,
+              atoBuyQty: item.detail?.preOpenMarket?.atoBuyQty,
+              atoSellQty: item.detail?.preOpenMarket?.atoSellQty,
+              change: item.detail?.preOpenMarket?.Change,
+              perChange: item.detail?.preOpenMarket?.perChange,
+              preopen: item.detail?.preOpenMarket.preopen.find(
+                (item) => item?.iep === true
+              ),
+            });
+            // item.detail?.preOpenMarket?.lastUpdateTime,
+          }
+        }
+        if (
+          item.detail?.preOpenMarket?.totalBuyQuantity >
+          m * item.detail?.preOpenMarket?.totalSellQuantity
+        ) {
+          if (item.detail?.preOpenMarket?.perChange > n) {
+            shootUpStocks.push({
+              name: item?.metadata?.symbol,
+              totalSellQty: item.detail?.preOpenMarket?.totalSellQuantity,
+              totalBuyQty: item.detail?.preOpenMarket?.totalBuyQuantity,
+              finalQuantity: item.detail?.preOpenMarket?.finalQuantity,
+              atoBuyQty: item.detail?.preOpenMarket?.atoBuyQty,
+              atoSellQty: item.detail?.preOpenMarket?.atoSellQty,
+              change: item.detail?.preOpenMarket?.Change,
+              perChange: item.detail?.preOpenMarket?.perChange,
+              preopen: item.detail?.preOpenMarket.preopen.find(
+                (item) => item?.iep === true
+              ),
+            });
+          }
+        }
+      });
+      return {
+        shootDownStocks,
+        shootUpStocks,
+      };
+    };
+    const a = await getMARKET_DATA_PRE_OPEN1();
     return a;
   } catch (error) {
     console.log("error", error);
